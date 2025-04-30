@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from users.models import CustomUser
 
 class UserLoginSerializer(serializers.Serializer):
     correo = serializers.CharField(max_length=100, required=False)
@@ -16,8 +16,8 @@ class UserLoginSerializer(serializers.Serializer):
         correo = correo.lower()
         print(correo)
         try:
-            user = User.objects.get(correo=correo)
-        except User.DoesNotExist:
+            user = CustomUser.objects.get(correo=correo)
+        except CustomUser.DoesNotExist:
             raise serializers.ValidationError({"error": "No se encontró un usuario con este correo electrónico."})
 
         if not user.check_password(password):

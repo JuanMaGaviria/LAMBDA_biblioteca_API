@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'users',
-    'auth'
+    'autenticacion',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'biblioteca.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'HolasoyGoku',
+        'NAME': 'biblioteca',
         'USER': 'postgres',
         'PASSWORD': '12345',
         'HOST': 'localhost',  
