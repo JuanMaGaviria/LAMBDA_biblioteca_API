@@ -27,9 +27,12 @@ class UserSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         current_user = request.user if request else None
 
-        # Solo admin puede crear usuarios
-        if not current_user or current_user.role != RoleEnum.ADMIN.value:
-            raise PermissionDenied("Solo el administrador puede crear nuevos usuarios.")
+        # SOLO EN DESARROLLO: permitir creación sin autenticación
+        if not current_user or not getattr(current_user, "role", None):
+            print("⚠️ ADVERTENCIA: Creación permitida sin autenticación")
+        else:
+            if current_user.role != RoleEnum.ADMIN.value:
+                raise PermissionDenied("Solo el administrador puede crear nuevos usuarios.")
 
         password = validated_data.pop('password', None)
         user = self.Meta.model(**validated_data)
@@ -37,6 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_password(password)
         user.save()
         return user
+
 
     def update(self, instance, validated_data):
         request = self.context.get('request')
@@ -67,7 +71,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Correo electrónico no válido.")
         
         dominio = value.split('@')[1]
-        if dominio in ['gmail.com']:
+        if dominio in ['gamail.com', 'hotmail.com', 'yahoo.com']:
             raise serializers.ValidationError("No se permiten correos personales.")
         
         return value

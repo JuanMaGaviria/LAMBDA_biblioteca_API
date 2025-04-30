@@ -8,19 +8,17 @@ User = get_user_model()
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]  # Solo autenticados
-
+    #permission_classes = [IsAuthenticated]  # Solo autenticados
+    
     def get_queryset(self):
         user = self.request.user
-
-        # Solo usuarios activos
         base_queryset = User.objects.filter(is_active=True).order_by('id')
 
-        # Empleado solo ve su propio usuario
-        if user.role != 'admin':
+        if user.is_authenticated and user.role != 'admin':
             return base_queryset.filter(id=user.id)
 
         return base_queryset
+
 
     def perform_create(self, serializer):
         # El permiso ya se valida en el serializer (solo admin puede crear)
